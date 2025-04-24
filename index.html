@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Gastos Compartidos</title>
+    </head>
+    <body>
+        <header>
+            <h1>Gastos Compartidos</h1>
+            <p>Ingresa los gastos y lo que pagó cada uno para calcular el saldo final</p>
+        </header>
+
+        <main>
+            <section id="ingreso-gastos">
+                <h2>Ingresar Nuevo Gasto</h2>
+            <form id="formulario-gasto">
+                <div>
+                    <label for="descripcion">Descripción:</label>
+                    <input type="text" id="descripcion" required>
+                </div>
+                <div>
+                    <label for="monto">Monto:</label>
+                    <input type="number" id="monto" required>
+                </div>
+                <div>
+                    <label for="pago-persona1">Pagado por Persona 1:</label>
+                    <input type="number" id="pago-persona1" required>
+                </div>
+                <div>
+                    <label for="pago-persona2">Pagado por Persona 2:</label>
+                    <input type="number" id="pago-persona2" required>
+                </div>
+                <button type="submit">Agregar Gasto</button>
+            </form>
+        </section>
+
+        <section id="lista-gastos">
+            <h2>Lista de Gastos</h2>
+            <ul id="gastos">
+                </ul>
+        </section>
+
+        <section id="resultado">
+            <h2>Resultado</h2>
+            <div id="calculo-final">
+                <p>Total Gastado por Persona 1: <span id="total-persona1">0.00</span></p>
+                <p>Total Gastado por Persona 2: <span id="total-persona2">0.00</span></p>
+                <p>Persona 1 debe a Persona 2: <span id="deuda-p1-p2">0.00</span></p>
+                <p>Persona 2 debe a Persona 1: <span id="deuda-p2-p1">0.00</span></p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Calculadora de Gastos Compartidos</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
