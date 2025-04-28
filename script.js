@@ -33,10 +33,9 @@ document.addEventListener('DOMContentLoaded', function() {
         const nuevoGasto = document.createElement('li');
         nuevoGasto.textContent = `Descripción: ${descripcion}, Monto: ${monto.toFixed(2)}, Pagado por Persona 1: ${pagoPersona1.toFixed(2)}, Pagado por Persona 2: ${pagoPersona2.toFixed(2)}`;
 
-        // Crear un botón de eliminación
-        const botonEliminar = document.createElement('button');
-        botonEliminar.textContent = 'X';
-        botonEliminar.style.marginLeft = '10px';
+        // Crear un span para el botón de eliminación
+        const botonEliminar = document.createElement('span');
+        botonEliminar.innerHTML = `<button style="margin-left:10px;">X</button>`;
         nuevoGasto.appendChild(botonEliminar);
 
         // Agregar el nuevo elemento a la lista de gastos
@@ -106,7 +105,8 @@ function actualizarDeudas() {
  function guardarDatos() {
     const gastos = [];
     listaGastos.querySelectorAll('li').forEach(item => {
-        gastos.push(item.textContent);
+        const textoGasto = item.firstChild.textContent.trim();
+        gastos.push(textoGasto);
     });
     localStorage.setItem('gastos', JSON.stringify(gastos));
     localStorage.setItem('totalPersona1', totalPersona1);
@@ -120,23 +120,31 @@ function cargarDatos() {
         gastos.forEach(gasto => {
             const nuevoGasto = document.createElement('li');
             nuevoGasto.textContent = gasto;
+            console.log(gasto);
 
-            // Crear un botón de eliminación
-            const botonEliminar = document.createElement('button');
-            botonEliminar.textContent = 'X';
-            botonEliminar.style.marginLeft = '10px';
+            // Crear un span para el botón de eliminación
+            const botonEliminar = document.createElement('span');
+            botonEliminar.innerHTML = `<button style="margin-left:10px;">X</button>`;
             nuevoGasto.appendChild(botonEliminar);
-
+        
             // Agregar el nuevo elemento a la lista de gastos
             listaGastos.appendChild(nuevoGasto);
 
             // Escuchar el evento de clic en el botón de eliminación
             botonEliminar.addEventListener('click', function() {
-                // Eliminar el gasto de la lista
-                listaGastos.removeChild(nuevoGasto);
+                // Extraer el texto del gasto antes de eliminar el elemento
+                const textoLimpio = nuevoGasto.firstChild.textContent.trim();
+                console.log('Texto limpio:', textoLimpio);
 
-                // Restar los montos del gasto eliminado de los totales
-                const [desc, monto, pago1, pago2] = gasto.match(/[\d.]+/g).map(Number);
+                // Ajustar la expresión regular para que coincida con el formato de texto
+                const match = textoLimpio.match(/Descripción: (.*?), Monto: ([\d.]+), Pagado por Persona 1: ([\d.]+), Pagado por Persona 2: ([\d.]+)/);
+                if (match) {
+                    const [_, desc, monto, pago1, pago2] = match.map(Number);
+                    console.log('Valores extraídos:', { desc, monto, pago1, pago2 });
+
+
+                console.log(desc, monto, pago1, pago2);
+
                 totalPersona1 -= pago1;
                 totalPersona2 -= pago2;
 
@@ -149,6 +157,11 @@ function cargarDatos() {
 
                 // Guardar datos en localStorage
                 guardarDatos();
+            } else {
+                console.error('Formato de texto no reconocido:', textoLimpio);
+            }
+            // Eliminar el gasto de la lista
+            listaGastos.removeChild(nuevoGasto);
             });
         });
     }
@@ -159,4 +172,30 @@ function cargarDatos() {
     totalPersona2Element.textContent = totalPersona2.toFixed(2);
     actualizarDeudas();
 }
+
+
+
+function reiniciarDatos() {
+    // Eliminar elementos específicos
+    localStorage.removeItem('gastos');
+    localStorage.removeItem('totalPersona1');
+    localStorage.removeItem('totalPersona2');
+
+    // Reiniciar variables y actualizar el DOM
+    totalPersona1 = 0;
+    totalPersona2 = 0;
+    totalPersona1Element.textContent = totalPersona1.toFixed(2);
+    totalPersona2Element.textContent = totalPersona2.toFixed(2);
+    deudaP1P2Element.textContent = '0.00';
+    deudaP2P1Element.textContent = '0.00';
+
+    // Limpiar la lista de gastos en el DOM
+    listaGastos.innerHTML = '';
+}
+
+// Ejemplo de uso: asignar a un botón de reinicio
+document.getElementById('boton-reiniciar').addEventListener('click', reiniciarDatos);
+
 });
+
+
