@@ -35,7 +35,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Crear un span para el botón de eliminación
         const botonEliminar = document.createElement('span');
-        botonEliminar.innerHTML = `<button style="margin-left:10px;">X</button>`;
+        botonEliminar.textContent = 'X';
+        botonEliminar.style.marginLeft = '10px';
+        botonEliminar.style.cursor = 'pointer';
+        botonEliminar.addEventListener('click', eliminarGasto);
         nuevoGasto.appendChild(botonEliminar);
 
         // Agregar el nuevo elemento a la lista de gastos
@@ -57,15 +60,23 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Limpiar los campos del formulario
         formularioGasto.reset();
-         
-        // Escuchar el evento de clic en el botón de eliminación
-        botonEliminar.addEventListener('click', function() {
-            // Eliminar el gasto de la lista
-            listaGastos.removeChild(nuevoGasto);
+    })
+
+    // Función para eliminar un gasto
+    function eliminarGasto(event) {
+        // Obtener el elemento li (el gasto)
+        const gastoElement = event.target.parentElement;
+        
+        // Extraer el texto del gasto
+        const textoGasto = gastoElement.firstChild.textContent.trim();
+
+        const match = textoGasto.match(/Descripción: .+, Monto: ([\d.]+), Pagado por Persona 1: ([\d.]+), Pagado por Persona 2: ([\d.]+)/);
+        if (match) {
+            const [_, monto, pago1, pago2] = match.map(Number);
 
             // Restar los montos del gasto eliminado de los totales
-            totalPersona1 -= pagoPersona1;
-            totalPersona2 -= pagoPersona2;
+            totalPersona1 -= pago1;
+            totalPersona2 -= pago2;
 
             // Actualizar el DOM con los nuevos totales
             totalPersona1Element.textContent = totalPersona1.toFixed(2);
@@ -74,30 +85,34 @@ document.addEventListener('DOMContentLoaded', function() {
             // Calcular y actualizar las deudas
             actualizarDeudas();
 
-            // Guardar los datos en localStorage
+            // Guardar datos en localStorage
             guardarDatos();
+        } else {
+            console.error('Formato de texto no reconocido:', textoGasto);
+        }
 
-    });
-});
-
-// Función para calcular y actualizar las deudas
-function actualizarDeudas() {
-    const totalGastado = totalPersona1 + totalPersona2;
-    const deberiaPagarCadaUno = totalGastado / 2;
-    const diferenciaP1 = deberiaPagarCadaUno - totalPersona1;
-    const diferenciaP2 = deberiaPagarCadaUno - totalPersona2;
-
-    if (diferenciaP1 > 0) {
-        deudaP1P2Element.textContent = diferenciaP1.toFixed(2);
-        deudaP2P1Element.textContent = '0.00';
-    } else if (diferenciaP2 > 0) {
-        deudaP1P2Element.textContent = '0.00';
-        deudaP2P1Element.textContent = diferenciaP2.toFixed(2);
-    } else {
-        deudaP1P2Element.textContent = '0.00';
-        deudaP2P1Element.textContent = '0.00';
+        // Eliminar el gasto de la lista
+        listaGastos.removeChild(gastoElement);
     }
-}
+
+    // Función para calcular y actualizar las deudas
+    function actualizarDeudas() {
+        const totalGastado = totalPersona1 + totalPersona2;
+        const deberiaPagarCadaUno = totalGastado / 2;
+        const diferenciaP1 = deberiaPagarCadaUno - totalPersona1;
+        const diferenciaP2 = deberiaPagarCadaUno - totalPersona2;
+
+        if (diferenciaP1 > 0) {
+            deudaP1P2Element.textContent = diferenciaP1.toFixed(2);
+            deudaP2P1Element.textContent = '0.00';
+        } else if (diferenciaP2 > 0) {
+            deudaP1P2Element.textContent = '0.00';
+            deudaP2P1Element.textContent = diferenciaP2.toFixed(2);
+        } else {
+            deudaP1P2Element.textContent = '0.00';
+            deudaP2P1Element.textContent = '0.00';
+        }
+    }
 
 
 
@@ -120,49 +135,19 @@ function cargarDatos() {
         gastos.forEach(gasto => {
             const nuevoGasto = document.createElement('li');
             nuevoGasto.textContent = gasto;
-            console.log(gasto);
 
-            // Crear un span para el botón de eliminación
-            const botonEliminar = document.createElement('span');
-            botonEliminar.innerHTML = `<button style="margin-left:10px;">X</button>`;
-            nuevoGasto.appendChild(botonEliminar);
-        
             // Agregar el nuevo elemento a la lista de gastos
             listaGastos.appendChild(nuevoGasto);
 
-            // Escuchar el evento de clic en el botón de eliminación
-            botonEliminar.addEventListener('click', function() {
-                // Extraer el texto del gasto antes de eliminar el elemento
-                const textoLimpio = nuevoGasto.firstChild.textContent.trim();
-                console.log('Texto limpio:', textoLimpio);
+            // Crear un span para el botón de eliminación
+            const botonEliminar = document.createElement('span');
+            botonEliminar.textContent = 'X';
+            botonEliminar.style.marginLeft = '10px';
+            botonEliminar.style.cursor = 'pointer';
+            botonEliminar.addEventListener('click', eliminarGasto);
+            nuevoGasto.appendChild(botonEliminar);
+        
 
-                // Ajustar la expresión regular para que coincida con el formato de texto
-                const match = textoLimpio.match(/Descripción: (.*?), Monto: ([\d.]+), Pagado por Persona 1: ([\d.]+), Pagado por Persona 2: ([\d.]+)/);
-                if (match) {
-                    const [_, desc, monto, pago1, pago2] = match.map(Number);
-                    console.log('Valores extraídos:', { desc, monto, pago1, pago2 });
-
-
-                console.log(desc, monto, pago1, pago2);
-
-                totalPersona1 -= pago1;
-                totalPersona2 -= pago2;
-
-                // Actualizar el DOM con los nuevos totales
-                totalPersona1Element.textContent = totalPersona1.toFixed(2);
-                totalPersona2Element.textContent = totalPersona2.toFixed(2);
-
-                // Calcular y actualizar las deudas
-                actualizarDeudas();
-
-                // Guardar datos en localStorage
-                guardarDatos();
-            } else {
-                console.error('Formato de texto no reconocido:', textoLimpio);
-            }
-            // Eliminar el gasto de la lista
-            listaGastos.removeChild(nuevoGasto);
-            });
         });
     }
 
