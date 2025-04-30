@@ -31,7 +31,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Crear un nuevo elemento de lista para el gasto
         const nuevoGasto = document.createElement('li');
+        nuevoGasto.classList.add('gasto-item');
         nuevoGasto.textContent = `Descripción: ${descripcion}, Monto: ${monto.toFixed(2)}, Pagado por Persona 1: ${pagoPersona1.toFixed(2)}, Pagado por Persona 2: ${pagoPersona2.toFixed(2)}`;
+
 
         // Crear un span para el botón de eliminación
         const botonEliminar = document.createElement('span');
@@ -93,6 +95,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Eliminar el gasto de la lista
         listaGastos.removeChild(gastoElement);
+        guardarDatos();
     }
 
     // Función para calcular y actualizar las deudas
@@ -135,6 +138,7 @@ function cargarDatos() {
         gastos.forEach(gasto => {
             const nuevoGasto = document.createElement('li');
             nuevoGasto.textContent = gasto;
+            nuevoGasto.classList.add('gasto-item');
 
             // Agregar el nuevo elemento a la lista de gastos
             listaGastos.appendChild(nuevoGasto);
