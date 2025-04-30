@@ -32,8 +32,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Crear un nuevo elemento de lista para el gasto
         const nuevoGasto = document.createElement('li');
         nuevoGasto.classList.add('gasto-item');
-        nuevoGasto.textContent = `Descripción: ${descripcion}, Monto: ${monto.toFixed(2)}, Pagado por Persona 1: ${pagoPersona1.toFixed(2)}, Pagado por Persona 2: ${pagoPersona2.toFixed(2)}`;
-
+        nuevoGasto.innerHTML = `<span class="descripcion">Descripción: ${descripcion},</span> <span class="monto">Monto: ${monto.toFixed(2)},</span> <span class="monto">Pagado por Persona 1: ${pagoPersona1.toFixed(2)},</span> <span class="monto">Pagado por Persona 2: ${pagoPersona2.toFixed(2)}</span>`;
 
         // Crear un span para el botón de eliminación
         const botonEliminar = document.createElement('span');
@@ -55,7 +54,7 @@ document.addEventListener('DOMContentLoaded', function() {
         totalPersona2Element.textContent = totalPersona2.toFixed(2);
 
         // Calcular y actualizar las deudas
-         actualizarDeudas();
+        actualizarDeudas();
 
         // Guardar los datos en localStorage
         guardarDatos();
@@ -69,12 +68,12 @@ document.addEventListener('DOMContentLoaded', function() {
         // Obtener el elemento li (el gasto)
         const gastoElement = event.target.parentElement;
         
-        // Extraer el texto del gasto
-        const textoGasto = gastoElement.firstChild.textContent.trim();
+        // Extraer el texto del gasto (excluyendo la X del botón)
+        const textoGasto = gastoElement.textContent.replace('X', '').trim();
 
-        const match = textoGasto.match(/Descripción: .+, Monto: ([\d.]+), Pagado por Persona 1: ([\d.]+), Pagado por Persona 2: ([\d.]+)/);
+        const match = textoGasto.match(/Descripción: (.+), Monto: ([\d.]+), Pagado por Persona 1: ([\d.]+), Pagado por Persona 2: ([\d.]+)/);
         if (match) {
-            const [_, monto, pago1, pago2] = match.map(Number);
+            const [_, descripcion, monto, pago1, pago2] = match.map(Number);
 
             // Restar los montos del gasto eliminado de los totales
             totalPersona1 -= pago1;
@@ -123,7 +122,8 @@ document.addEventListener('DOMContentLoaded', function() {
  function guardarDatos() {
     const gastos = [];
     listaGastos.querySelectorAll('li').forEach(item => {
-        const textoGasto = item.firstChild.textContent.trim();
+        // Obtener el texto completo del gasto (excluyendo la X del botón)
+        const textoGasto = item.textContent.replace('X', '').trim();
         gastos.push(textoGasto);
     });
     localStorage.setItem('gastos', JSON.stringify(gastos));
@@ -137,11 +137,14 @@ function cargarDatos() {
     if (gastos) {
         gastos.forEach(gasto => {
             const nuevoGasto = document.createElement('li');
-            nuevoGasto.textContent = gasto;
             nuevoGasto.classList.add('gasto-item');
-
-            // Agregar el nuevo elemento a la lista de gastos
-            listaGastos.appendChild(nuevoGasto);
+            
+            // Extraer los datos del gasto
+            const match = gasto.match(/Descripción: (.+), Monto: ([\d.]+), Pagado por Persona 1: ([\d.]+), Pagado por Persona 2: ([\d.]+)/);
+            if (match) {
+                const [_, descripcion, monto, pago1, pago2] = match;
+                nuevoGasto.innerHTML = `<span class="descripcion">Descripción: ${descripcion},</span> <span class="monto">Monto: ${parseFloat(monto).toFixed(2)},</span> <span class="monto">Pagado por Persona 1: ${parseFloat(pago1).toFixed(2)},</span> <span class="monto">Pagado por Persona 2: ${parseFloat(pago2).toFixed(2)}</span>`;
+            }
 
             // Crear un span para el botón de eliminación
             const botonEliminar = document.createElement('span');
@@ -150,8 +153,9 @@ function cargarDatos() {
             botonEliminar.style.cursor = 'pointer';
             botonEliminar.addEventListener('click', eliminarGasto);
             nuevoGasto.appendChild(botonEliminar);
-        
 
+            // Agregar el nuevo elemento a la lista de gastos
+            listaGastos.appendChild(nuevoGasto);
         });
     }
 
@@ -161,8 +165,6 @@ function cargarDatos() {
     totalPersona2Element.textContent = totalPersona2.toFixed(2);
     actualizarDeudas();
 }
-
-
 
 function reiniciarDatos() {
     // Eliminar elementos específicos
@@ -184,7 +186,4 @@ function reiniciarDatos() {
 
 // Ejemplo de uso: asignar a un botón de reinicio
 document.getElementById('boton-reiniciar').addEventListener('click', reiniciarDatos);
-
 });
-
-
