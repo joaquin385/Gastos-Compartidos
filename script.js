@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Crear un nuevo elemento de lista para el gasto
         const nuevoGasto = document.createElement('li');
         nuevoGasto.classList.add('gasto-item');
-        nuevoGasto.innerHTML = `<span class="descripcion">Descripción: ${descripcion},</span> <span class="monto">Monto: ${monto.toFixed(2)},</span> <span class="monto">Pagado por Persona 1: ${pagoPersona1.toFixed(2)},</span> <span class="monto">Pagado por Persona 2: ${pagoPersona2.toFixed(2)}</span>`;
+        nuevoGasto.innerHTML = `<span class="descripcion">Descripción: ${descripcion}</span> <span class="monto">Monto: ${formatearMoneda(monto)}</span> <span class="monto">Pagado por Persona 1: ${formatearMoneda(pagoPersona1)}</span> <span class="monto">Pagado por Persona 2: ${formatearMoneda(pagoPersona2)}</span>`;
 
         // Crear un span para el botón de eliminación
         const botonEliminar = document.createElement('span');
@@ -50,8 +50,8 @@ document.addEventListener('DOMContentLoaded', function() {
         totalPersona2 += pagoPersona2;
 
         // Actualizar el DOM con los nuevos totales
-        totalPersona1Element.textContent = totalPersona1.toFixed(2);
-        totalPersona2Element.textContent = totalPersona2.toFixed(2);
+        totalPersona1Element.textContent = formatearMoneda(totalPersona1);
+        totalPersona2Element.textContent = formatearMoneda(totalPersona2);
 
         // Calcular y actualizar las deudas
         actualizarDeudas();
@@ -71,17 +71,17 @@ document.addEventListener('DOMContentLoaded', function() {
         // Extraer el texto del gasto (excluyendo la X del botón)
         const textoGasto = gastoElement.textContent.replace('X', '').trim();
 
-        const match = textoGasto.match(/Descripción: (.+), Monto: ([\d.]+), Pagado por Persona 1: ([\d.]+), Pagado por Persona 2: ([\d.]+)/);
+        const match = textoGasto.match(/Descripción: (.+) Monto: \$([\d,]+\.\d+) Pagado por Persona 1: \$([\d,]+\.\d+) Pagado por Persona 2: \$([\d,]+\.\d+)/);
         if (match) {
-            const [_, descripcion, monto, pago1, pago2] = match.map(Number);
+            const [_, descripcion, monto, pago1, pago2] = match.map(val => val.replace(/,/g, '')).map(Number);
 
             // Restar los montos del gasto eliminado de los totales
             totalPersona1 -= pago1;
             totalPersona2 -= pago2;
 
             // Actualizar el DOM con los nuevos totales
-            totalPersona1Element.textContent = totalPersona1.toFixed(2);
-            totalPersona2Element.textContent = totalPersona2.toFixed(2);
+            totalPersona1Element.textContent = formatearMoneda(totalPersona1);
+            totalPersona2Element.textContent = formatearMoneda(totalPersona2);
 
             // Calcular y actualizar las deudas
             actualizarDeudas();
@@ -105,14 +105,14 @@ document.addEventListener('DOMContentLoaded', function() {
         const diferenciaP2 = deberiaPagarCadaUno - totalPersona2;
 
         if (diferenciaP1 > 0) {
-            deudaP1P2Element.textContent = diferenciaP1.toFixed(2);
-            deudaP2P1Element.textContent = '0.00';
+            deudaP1P2Element.textContent = formatearMoneda(diferenciaP1);
+            deudaP2P1Element.textContent = formatearMoneda(0);
         } else if (diferenciaP2 > 0) {
-            deudaP1P2Element.textContent = '0.00';
-            deudaP2P1Element.textContent = diferenciaP2.toFixed(2);
+            deudaP1P2Element.textContent = formatearMoneda(0);
+            deudaP2P1Element.textContent = formatearMoneda(diferenciaP2);
         } else {
-            deudaP1P2Element.textContent = '0.00';
-            deudaP2P1Element.textContent = '0.00';
+            deudaP1P2Element.textContent = formatearMoneda(0);
+            deudaP2P1Element.textContent = formatearMoneda(0);
         }
     }
 
@@ -140,10 +140,10 @@ function cargarDatos() {
             nuevoGasto.classList.add('gasto-item');
             
             // Extraer los datos del gasto
-            const match = gasto.match(/Descripción: (.+), Monto: ([\d.]+), Pagado por Persona 1: ([\d.]+), Pagado por Persona 2: ([\d.]+)/);
+            const match = gasto.match(/Descripción: (.+) Monto: \$([\d,]+\.\d+) Pagado por Persona 1: \$([\d,]+\.\d+) Pagado por Persona 2: \$([\d,]+\.\d+)/);
             if (match) {
                 const [_, descripcion, monto, pago1, pago2] = match;
-                nuevoGasto.innerHTML = `<span class="descripcion">Descripción: ${descripcion},</span> <span class="monto">Monto: ${parseFloat(monto).toFixed(2)},</span> <span class="monto">Pagado por Persona 1: ${parseFloat(pago1).toFixed(2)},</span> <span class="monto">Pagado por Persona 2: ${parseFloat(pago2).toFixed(2)}</span>`;
+                nuevoGasto.innerHTML = `<span class="descripcion">Descripción: ${descripcion}</span> <span class="monto">Monto: ${formatearMoneda(parseFloat(monto.replace(/,/g, '')))}</span> <span class="monto">Pagado por Persona 1: ${formatearMoneda(parseFloat(pago1.replace(/,/g, '')))}</span> <span class="monto">Pagado por Persona 2: ${formatearMoneda(parseFloat(pago2.replace(/,/g, '')))}</span>`;
             }
 
             // Crear un span para el botón de eliminación
@@ -161,8 +161,8 @@ function cargarDatos() {
 
     totalPersona1 = parseFloat(localStorage.getItem('totalPersona1')) || 0;
     totalPersona2 = parseFloat(localStorage.getItem('totalPersona2')) || 0;
-    totalPersona1Element.textContent = totalPersona1.toFixed(2);
-    totalPersona2Element.textContent = totalPersona2.toFixed(2);
+    totalPersona1Element.textContent = formatearMoneda(totalPersona1);
+    totalPersona2Element.textContent = formatearMoneda(totalPersona2);
     actualizarDeudas();
 }
 
@@ -175,15 +175,19 @@ function reiniciarDatos() {
     // Reiniciar variables y actualizar el DOM
     totalPersona1 = 0;
     totalPersona2 = 0;
-    totalPersona1Element.textContent = totalPersona1.toFixed(2);
-    totalPersona2Element.textContent = totalPersona2.toFixed(2);
-    deudaP1P2Element.textContent = '0.00';
-    deudaP2P1Element.textContent = '0.00';
+    totalPersona1Element.textContent = formatearMoneda(totalPersona1);
+    totalPersona2Element.textContent = formatearMoneda(totalPersona2);
+    deudaP1P2Element.textContent = formatearMoneda(0);
+    deudaP2P1Element.textContent = formatearMoneda(0);
 
     // Limpiar la lista de gastos en el DOM
     listaGastos.innerHTML = '';
 }
 
+// Función para formatear moneda
+function formatearMoneda(valor) {
+    return numeral(valor).format('$0,0.00');
+    }
 // Ejemplo de uso: asignar a un botón de reinicio
 document.getElementById('boton-reiniciar').addEventListener('click', reiniciarDatos);
 });

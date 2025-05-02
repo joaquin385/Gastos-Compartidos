@@ -1,0 +1,23 @@
+{
+  "name": "gastos-compartidos",
+  "version": "1.0.0",
+  "description": "Web para dividir gastos",
+  "homepage": "https://github.com/joaquin385/Gastos-Compartidos#readme",
+  "bugs": {
+    "url": "https://github.com/joaquin385/Gastos-Compartidos/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/joaquin385/Gastos-Compartidos.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "numeral": "^2.0.6"
+  }
+}

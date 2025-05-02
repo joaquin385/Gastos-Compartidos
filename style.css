@@ -87,7 +87,7 @@ ul {
 
 .gasto-item span:first-child {
     font-weight: bold;
-    color: #5f8615;
+    color: #fff;
 }
 
 .gasto-item span:not(:first-child) {
