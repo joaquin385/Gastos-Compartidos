@@ -31,14 +31,19 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Crear un nuevo elemento de lista para el gasto
         const nuevoGasto = document.createElement('li');
-        nuevoGasto.classList.add('gasto-item');
-        nuevoGasto.innerHTML = `<span class="descripcion">Descripción: ${descripcion}</span> <span class="monto">Monto: ${formatearMoneda(monto)}</span> <span class="monto">Pagado por Persona 1: ${formatearMoneda(pagoPersona1)}</span> <span class="monto">Pagado por Persona 2: ${formatearMoneda(pagoPersona2)}</span>`;
+        nuevoGasto.classList.add('bg-gray-600', 'p-4', 'rounded-md', 'mb-3');
+        nuevoGasto.innerHTML = `
+            <div class="space-y-2">
+                <span class="block font-semibold text-white">Descripción: ${descripcion}</span>
+                <span class="block text-gray-300">Monto: ${formatearMoneda(monto)}</span>
+                <span class="block text-gray-300">Pagado por Persona 1: ${formatearMoneda(pagoPersona1)}</span>
+                <span class="block text-gray-300">Pagado por Persona 2: ${formatearMoneda(pagoPersona2)}</span>
+            </div>`;
 
         // Crear un span para el botón de eliminación
         const botonEliminar = document.createElement('span');
         botonEliminar.textContent = 'X';
-        botonEliminar.style.marginLeft = '10px';
-        botonEliminar.style.cursor = 'pointer';
+        botonEliminar.classList.add('ml-2', 'cursor-pointer', 'text-red-500', 'hover:text-red-700', 'font-bold');
         botonEliminar.addEventListener('click', eliminarGasto);
         nuevoGasto.appendChild(botonEliminar);
 
@@ -71,7 +76,8 @@ document.addEventListener('DOMContentLoaded', function() {
         // Extraer el texto del gasto (excluyendo la X del botón)
         const textoGasto = gastoElement.textContent.replace('X', '').trim();
 
-        const match = textoGasto.match(/Descripción: (.+) Monto: \$([\d,]+\.\d+) Pagado por Persona 1: \$([\d,]+\.\d+) Pagado por Persona 2: \$([\d,]+\.\d+)/);
+        // Actualizar la expresión regular para coincidir con el nuevo formato
+        const match = textoGasto.match(/Descripción: (.+)\s+Monto: \$([\d,]+\.\d+)\s+Pagado por Persona 1: \$([\d,]+\.\d+)\s+Pagado por Persona 2: \$([\d,]+\.\d+)/);
         if (match) {
             const [_, descripcion, monto, pago1, pago2] = match.map(val => val.replace(/,/g, '')).map(Number);
 
@@ -137,20 +143,25 @@ function cargarDatos() {
     if (gastos) {
         gastos.forEach(gasto => {
             const nuevoGasto = document.createElement('li');
-            nuevoGasto.classList.add('gasto-item');
+            nuevoGasto.classList.add('bg-gray-600', 'p-4', 'rounded-md', 'mb-3');
             
-            // Extraer los datos del gasto
-            const match = gasto.match(/Descripción: (.+) Monto: \$([\d,]+\.\d+) Pagado por Persona 1: \$([\d,]+\.\d+) Pagado por Persona 2: \$([\d,]+\.\d+)/);
+            // Extraer los datos del gasto con la nueva expresión regular
+            const match = gasto.match(/Descripción: (.+)\s+Monto: \$([\d,]+\.\d+)\s+Pagado por Persona 1: \$([\d,]+\.\d+)\s+Pagado por Persona 2: \$([\d,]+\.\d+)/);
             if (match) {
                 const [_, descripcion, monto, pago1, pago2] = match;
-                nuevoGasto.innerHTML = `<span class="descripcion">Descripción: ${descripcion}</span> <span class="monto">Monto: ${formatearMoneda(parseFloat(monto.replace(/,/g, '')))}</span> <span class="monto">Pagado por Persona 1: ${formatearMoneda(parseFloat(pago1.replace(/,/g, '')))}</span> <span class="monto">Pagado por Persona 2: ${formatearMoneda(parseFloat(pago2.replace(/,/g, '')))}</span>`;
+                nuevoGasto.innerHTML = `
+                    <div class="space-y-2">
+                        <span class="block font-semibold text-white">Descripción: ${descripcion}</span>
+                        <span class="block text-gray-300">Monto: ${formatearMoneda(parseFloat(monto.replace(/,/g, '')))}</span>
+                        <span class="block text-gray-300">Pagado por Persona 1: ${formatearMoneda(parseFloat(pago1.replace(/,/g, '')))}</span>
+                        <span class="block text-gray-300">Pagado por Persona 2: ${formatearMoneda(parseFloat(pago2.replace(/,/g, '')))}</span>
+                    </div>`;
             }
 
             // Crear un span para el botón de eliminación
             const botonEliminar = document.createElement('span');
             botonEliminar.textContent = 'X';
-            botonEliminar.style.marginLeft = '10px';
-            botonEliminar.style.cursor = 'pointer';
+            botonEliminar.classList.add('ml-2', 'cursor-pointer', 'text-red-500', 'hover:text-red-700', 'font-bold');
             botonEliminar.addEventListener('click', eliminarGasto);
             nuevoGasto.appendChild(botonEliminar);
 

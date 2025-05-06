@@ -4,64 +4,63 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Gastos Compartidos</title>
-        <link rel="stylesheet" href="style.css">
         <link href="src/output.css" rel="stylesheet">
+
     </head>
-    <body>
-        <header>
-            <h1>Gastos Compartidos</h1>
-            <p>Ingresa los gastos y lo que pagó cada uno para calcular el saldo final</p>
+    <body class="bg-gray-800 text-gray-100 font-sans">
+        <header class="text-center py-5 bg-gray-700 shadow-md">
+            <h1 class="text-2xl font-bold">Gastos Compartidos</h1>
+            <p class="mt-2">Ingresa los gastos y lo que pagó cada uno para calcular el saldo final</p>
         </header>
 
-        <main>
-            <section id="ingreso-gastos">
-                <h2>Ingresar Nuevo Gasto</h2>
-            <form id="formulario-gasto">
-                <div>
-                    <label for="descripcion">Descripción:</label>
-                    <input type="text" id="descripcion" required>
-                </div>
-                <div>
-                    <label for="monto">Monto:</label>
-                    <input type="number" id="monto" required>
-                </div>
-                <div>
-                    <label for="pago-persona1">Pagado por Persona 1:</label>
-                    <input type="number" id="pago-persona1" required>
-                </div>
-                <div>
-                    <label for="pago-persona2">Pagado por Persona 2:</label>
-                    <input type="number" id="pago-persona2" required>
-                </div>
-                <button type="submit">Agregar Gasto</button>
-                
-                <button id="boton-reiniciar">Reiniciar</button>
-            </form>
-        </section>
+        <main class="flex flex-col md:flex-row justify-between items-start p-4 gap-4">
+            <section id="ingreso-gastos" class="bg-gray-700 p-5 rounded-lg shadow-md w-full md:w-1/3">
+                <h2 class="text-xl font-semibold mb-4">Ingresar Nuevo Gasto</h2>
+                <form id="formulario-gasto" class="flex flex-col gap-4">
+                    <div>
+                        <label for="descripcion" class="block mb-1">Descripción:</label>
+                        <input type="text" id="descripcion" required class="w-full px-3 py-2 bg-gray-600 border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label for="monto" class="block mb-1">Monto:</label>
+                        <input type="number" id="monto" required class="w-full px-3 py-2 bg-gray-600 border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label for="pago-persona1" class="block mb-1">Pagado por Persona 1:</label>
+                        <input type="number" id="pago-persona1" required class="w-full px-3 py-2 bg-gray-600 border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label for="pago-persona2" class="block mb-1">Pagado por Persona 2:</label>
+                        <input type="number" id="pago-persona2" required class="w-full px-3 py-2 bg-gray-600 border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md transition-colors duration-300">Agregar Gasto</button>
+                    <button type="button" id="boton-reiniciar" class="bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded-md transition-colors duration-300">Reiniciar</button>
+                </form>
+            </section>
 
-        <section id="lista-gastos">
-            <h2>Lista de Gastos</h2>
-            <ul id="gastos">
+            <section id="lista-gastos" class="bg-gray-700 p-5 rounded-lg shadow-md w-full md:w-1/3">
+                <h2 class="text-xl font-semibold mb-4">Lista de Gastos</h2>
+                <ul id="gastos" class="space-y-3">
                 </ul>
-        </section>
+            </section>
 
-        <section id="resultado">
-            <h2>Resultado</h2>
-            <div id="calculo-final">
-                <p>Total Gastado por Persona 1: <span id="total-persona1">0.00</span></p>
-                <p>Total Gastado por Persona 2: <span id="total-persona2">0.00</span></p>
-                <p>Persona 1 debe a Persona 2: <span id="deuda-p1-p2">0.00</span></p>
-                <p>Persona 2 debe a Persona 1: <span id="deuda-p2-p1">0.00</span></p>
-            </div>
-        </section>
-    </main>
+            <section id="resultado" class="bg-gray-700 p-5 rounded-lg shadow-md w-full md:w-1/3">
+                <h2 class="text-xl font-semibold mb-4">Resultado</h2>
+                <div id="calculo-final" class="space-y-2">
+                    <p>Total Gastado por Persona 1: <span id="total-persona1" class="font-semibold">0.00</span></p>
+                    <p>Total Gastado por Persona 2: <span id="total-persona2" class="font-semibold">0.00</span></p>
+                    <p>Persona 1 debe a Persona 2: <span id="deuda-p1-p2" class="font-semibold">0.00</span></p>
+                    <p>Persona 2 debe a Persona 1: <span id="deuda-p2-p1" class="font-semibold">0.00</span></p>
+                </div>
+            </section>
+        </main>
 
-    <footer>
-        <p>&copy; 2025 Calculadora de Gastos Compartidos</p>
-    </footer>
+        <footer class="text-center py-4 mt-8 bg-gray-700">
+            <p>&copy; 2025 Calculadora de Gastos Compartidos</p>
+        </footer>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/numeral.js/2.0.6/numeral.min.js"></script>
-    <script src="script.js"></script>
-</body>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/numeral.js/2.0.6/numeral.min.js"></script>
+        <script src="script.js"></script>
+    </body>
 </html>
 
